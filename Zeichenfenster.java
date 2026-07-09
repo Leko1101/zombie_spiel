@@ -98,6 +98,79 @@ public class Zeichenfenster {
         graphic.setColor(original);
     }
 
-    public void drawCircle(int x, int y, int r, Color color) {
+        public void drawCircle(int x, int y, int r, Color color) {
         if (graphic == null) show();
-        Color original = 00,00
+        Color original = graphic.getColor();
+        graphic.setColor(color);
+        graphic.drawOval(x - r, y - r, 2 * r, 2 * r);
+        graphic.setColor(original);
+    }
+
+    public void fillCircle(int x, int y, int r, Color color) {
+        if (graphic == null) show();
+        Color original = graphic.getColor();
+        graphic.setColor(color);
+        graphic.fillOval(x - r, y - r, 2 * r, 2 * r);
+        graphic.setColor(original);
+    }
+
+    public void show() {
+        frame.setVisible(true);
+        if (graphic == null) {
+            // Use the actual size of the canvas component
+            int w = canvas.getWidth() > 0 ? canvas.getWidth() : width;
+            int h = canvas.getHeight() > 0 ? canvas.getHeight() : height;
+            
+            canvasImage = canvas.createImage(w, h);
+            graphic = (Graphics2D) canvasImage.getGraphics();
+            
+            // Enable Anti-aliasing for smoother lines
+            graphic.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            
+            graphic.setColor(backgroundColor);
+            graphic.fillRect(0, 0, w, h);
+            graphic.setColor(Color.black);
+        }
+    }
+
+    public void closeWindow() {
+        frame.setVisible(false);
+        frame.dispose();
+    }
+
+    public void clearCanvas() {
+        if (graphic == null) return;
+        Color original = graphic.getColor();
+        graphic.setColor(backgroundColor);
+        graphic.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        graphic.setColor(original);
+    }
+
+    public void wait(int zeit) {
+        try {
+            Thread.sleep(zeit);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public void drawString(String text, int x, int y, Color color) {
+        if (graphic == null) show();
+        graphic.setColor(color);
+        if (graphic == null) show();
+        graphic.drawString(text, x, y);
+    }
+
+    private class CanvasPane extends JPanel {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (canvasImage != null) {
+                g.drawImage(canvasImage, 0, 0, this);
+            }
+        }
+    }
+
+}
+
+        

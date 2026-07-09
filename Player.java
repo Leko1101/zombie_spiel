@@ -8,6 +8,7 @@ public class Player {
     int size;
 
     public Player(int x, int y, int size) {
+        this.size = size;
         this.x = new int[2];
         this.y = new int[2];
         this.x[0] = x;
