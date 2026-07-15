@@ -1,5 +1,5 @@
 import java.awt.Color;
-import src.code.Zeichenfenster;
+import src.Zeichenfenster;
 
 public class Player {
     int[] x;

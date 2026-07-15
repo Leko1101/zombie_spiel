@@ -1,6 +1,6 @@
 
 import java.awt.Color;
-import src.code.Zeichenfenster;
+import src.Zeichenfenster;
 
 public class Main {
     public static void main(String[] args) {
