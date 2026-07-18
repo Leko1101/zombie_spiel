@@ -2,24 +2,45 @@ import java.awt.Color;
 import src.Zeichenfenster;
 
 public class Player {
-    int[] x;
-    int[] y;
+    int x;
+    int y;
     Color color = Color.RED;
-    int size;
+    int r;
+    double angle; //0-360° = 0-1
 
-    public Player(int x, int y, int size) {
-        this.size = size;
-        this.x = new int[2];
-        this.y = new int[2];
-        this.x[0] = x;
-        this.x[1] = x + size;
-        this.y[0] = y;
-        this.y[1] = y + size;
-        this.size = size;
+    public Player(int x, int y, int r) {
+        this.r = r;
+        this.x = x;
+        this.y = y;
+        this.r= r;
+        this.angle = 0.5; 
+    }
+
+    public void updateAngle(double change) {
+        angle = angle + change;
     }
 
     public void show(Zeichenfenster z) {
-        z.fillRectangle(x, y, color);
+        z.fillCircle(x, y, r, color);
+
+        double rad = angle * 2 * Math.PI;
+
+        int tipX = (int) Math.round(x + Math.cos(rad) * (r + 30));
+        int tipY = (int) Math.round(y + Math.sin(rad) * (r + 30));
+
+        int leftX = (int) Math.round(x - Math.cos(rad) * 15 - Math.sin(rad) * 10);
+        int leftY = (int) Math.round(y - Math.sin(rad) * 15 + Math.cos(rad) * 10);
+
+        int rightX = (int) Math.round(x - Math.cos(rad) * 15 + Math.sin(rad) * 10);
+        int rightY = (int) Math.round(y - Math.sin(rad) * 15 - Math.cos(rad) * 10);
+
+        z.fillTriangle(
+            new int[]{leftX, rightX, tipX},
+            new int[]{leftY, rightY, tipY},
+            color
+        );
     }
 
 }
+
+
