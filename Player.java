@@ -2,22 +2,48 @@ import java.awt.Color;
 import src.Zeichenfenster;
 
 public class Player {
-    int x;
-    int y;
-    Color color = Color.RED;
-    int r;
-    double angle; //0-360° = 0-1
+    private int x;
+    private int y;
+    private final Color color = Color.RED;
+    private final int r;
+    private double angle; //0-360° = 0-1
 
     public Player(int x, int y, int r) {
         this.r = r;
         this.x = x;
         this.y = y;
-        this.r= r;
-        this.angle = 0.5; 
+        this.angle = 0.5;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     public void updateAngle(double change) {
         angle = angle + change;
+    }
+
+    public void move(int change, String keyPressed) {
+        switch (keyPressed.toUpperCase()) {
+            case "A":
+                x = x - change;
+                break;
+            case "D":
+                x = x + change;
+                break;
+            case "S":
+                y = y + change;
+                break;
+            case "W":
+                y = y - change;
+                break;
+            default:
+                break;
+        }
     }
 
     public void show(Zeichenfenster z) {

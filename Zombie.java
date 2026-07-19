@@ -1,24 +1,30 @@
 import java.awt.Color;
-
 import src.Zeichenfenster;
 
 public class Zombie {
-    int[] x; 
-    int[] y; 
-    Color color = Color.GREEN;
-    int size;
+    private int x;
+    private int y;
+    private final Color color = Color.GREEN;
+    private final int size;
 
-    public Zombie(int x, int y,int size){
-        this.x = new int[2];
-        this.y = new int[2];
-        this.x[0] = x;
-        this.x[1] = x + size;
-        this.y[0] = y;
-        this.y[1] = y + size;
+    public Zombie(int x, int y, int size) {
+        this.x = x;
+        this.y = y;
         this.size = size;
     }
 
-    public void show(Zeichenfenster z){
-        z.fillRectangle(x, y, color);
+    public void moveTowards(Player player, int speed) {
+        int dx = player.getX() - x;
+        int dy = player.getY() - y;
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > 0) {
+            x += (int) Math.round(dx / distance * speed);
+            y += (int) Math.round(dy / distance * speed);
+        }
+    }
+
+    public void show(Zeichenfenster z) {
+        z.fillRectangle(new int[]{x, x + size}, new int[]{y, y + size}, color);
     }
 }
