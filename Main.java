@@ -18,7 +18,7 @@ public class Main {
         Set<Integer> pressedKeys = new HashSet<>();
 
         for (int i = 0; i < zombies.length; i++) {
-            zombies[i] = new Zombie(80 + i * 120, 80 + i * 60, 60);
+            zombies[i] = new Zombie((int) (Math.random() * 1860) + 30, (int) (Math.random() * 1020) + 30, 60);
         }
 
         update(z, player, zombies, zombies.length);
@@ -27,6 +27,16 @@ public class Main {
             for (Zombie zombie : zombies) {
                 if (zombie != null) {
                     zombie.moveTowards(player, 3);
+                }
+            }
+
+            for (Zombie zombie : zombies) {
+                if (zombie != null) {
+                    if(zombie.isTouching(player)) {
+                        System.out.println("Game over");
+                        z.closeWindow();
+                        System.exit(0); //display a game over screen
+                    }
                 }
             }
 

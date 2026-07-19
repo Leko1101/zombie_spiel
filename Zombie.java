@@ -5,13 +5,26 @@ public class Zombie {
     private int x;
     private int y;
     private final Color color = Color.GREEN;
-    private final int size;
+    private final int r;
 
-    public Zombie(int x, int y, int size) {
+    public Zombie(int x, int y, int r) {
         this.x = x;
         this.y = y;
-        this.size = size;
+        this.r = r;
     }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getR() {
+        return r;
+    }
+
 
     public void moveTowards(Player player, int speed) {
         int dx = player.getX() - x;
@@ -24,7 +37,17 @@ public class Zombie {
         }
     }
 
+    public boolean isTouching(Player player) {
+        int dx = player.getX() - x;
+        int dy = player.getY() - y;
+        double distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance <= player.getR() + r) {
+            return true;
+        }
+        return false;
+    }
+
     public void show(Zeichenfenster z) {
-        z.fillRectangle(new int[]{x, x + size}, new int[]{y, y + size}, color);
+        z.fillCircle(x, y, r, color);
     }
 }

@@ -23,6 +23,10 @@ public class Player {
         return y;
     }
 
+    public int getR() {
+        return r;
+    }
+
     public void updateAngle(double change) {
         angle = angle + change;
     }
