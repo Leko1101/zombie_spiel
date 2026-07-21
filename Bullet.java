@@ -7,15 +7,16 @@ public class Bullet {
     int speed = 10;
     int x; 
     int y;
+    int r = 10;
 
-    public Bullet(int startX, int startY, int targetX, int targetY) {
-        this.x = startX;
-        this.y = startY;
-        this.angle = Math.atan2(targetY - startY, targetX - startX);
+    public Bullet(int x, int y, double angle) {
+        this.x = x;
+        this.y = y;
+        this.angle = angle;
     }
 
     public void show(Zeichenfenster z) {
-        z.fillCircle(x, y, 10, color);
+        z.fillCircle(x, y, r, color);
     }
 
     public void move() {
@@ -23,6 +24,18 @@ public class Bullet {
         int speedY = (int) Math.round(Math.sin(angle) * speed);
         x = x + speedX;
         y = y + speedY;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getR() {
+        return r;
     }
 
 }

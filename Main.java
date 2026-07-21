@@ -19,6 +19,7 @@ public class Main {
         Set<Integer> pressedKeys = new HashSet<>();
         ArrayList<Zombie> zombies = new ArrayList<>();
         ArrayList<Bullet> bullets = new ArrayList<>();
+        int[] score = new int[]{0};
 
         for (int i = 0; i < 6; i++) {
             zombies.add(new Zombie((int) (Math.random() * 1860) + 30, (int) (Math.random() * 1020) + 30, 60));
@@ -41,6 +42,26 @@ public class Main {
                         System.exit(0); //display a game over screen
                     }
                 }
+            }
+
+            
+            for (int i = bullets.size() - 1; i >= 0; i--) {
+                Bullet bullet = bullets.get(i);
+    
+                for (int j = zombies.size() - 1; j >= 0; j--) {
+                    Zombie zombie = zombies.get(j);
+
+                    int dx = bullet.getX() - zombie.getX();
+                    int dy = bullet.getY() - zombie.getY();
+
+                    if (Math.sqrt(dx * dx + dy * dy) <= bullet.getR() + zombie.getR()) {
+                        bullets.remove(i);  // Remove bullet by index
+                        zombies.remove(j);  // Remove zombie by index
+                        score[0] += 1;
+                        break; // Stop checking this bullet against other zombies since it's gone!
+                    }
+                }
+                update(z, player, zombies, zombies.size(), bullets);
             }
 
             int movementChange = 10;
@@ -92,7 +113,7 @@ public class Main {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    Bullet bullet = new Bullet(player.getAngle(),player.getTipX(), player.getTipY());
+                    Bullet bullet = new Bullet(player.getTipX(), player.getTipY(), player.getRads());
                     bullets.add(bullet);
                 }
             }
@@ -125,7 +146,7 @@ public class Main {
 
         for (Bullet bullet : bullets) {
             if (bullet != null) {
-                bullet.show(player, z);
+                bullet.show(z);
             }
         }
 

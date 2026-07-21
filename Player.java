@@ -37,8 +37,8 @@ public class Player {
         return tipY;
     }
 
-    public double getAngle() {
-        return angle; 
+    public double getRads() {
+        return angle * 2 * Math.PI; 
     }
 
     public void updateAngle(double change) {
