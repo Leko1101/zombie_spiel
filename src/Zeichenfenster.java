@@ -2,6 +2,7 @@ package src;
 
 import java.awt.*;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
 
@@ -70,6 +71,10 @@ public class Zeichenfenster {
 
     public void addKeyListener(KeyListener listener) {
         canvas.addKeyListener(listener);
+    }
+
+    public void addMouseListener(MouseListener listener) {
+        canvas.addMouseListener(listener);
     }
 
     public void requestFocus() {

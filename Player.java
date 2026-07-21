@@ -7,6 +7,8 @@ public class Player {
     private final Color color = Color.RED;
     private final int r;
     private double angle; //0-360° = 0-1
+    private int tipX;
+    private int tipY;
 
     public Player(int x, int y, int r) {
         this.r = r;
@@ -25,6 +27,18 @@ public class Player {
 
     public int getR() {
         return r;
+    }
+
+    public int getTipX() {
+        return tipX;
+    }
+
+    public int getTipY() {
+        return tipY;
+    }
+
+    public double getAngle() {
+        return angle; 
     }
 
     public void updateAngle(double change) {
@@ -55,8 +69,8 @@ public class Player {
 
         double rad = angle * 2 * Math.PI;
 
-        int tipX = (int) Math.round(x + Math.cos(rad) * (r + 30));
-        int tipY = (int) Math.round(y + Math.sin(rad) * (r + 30));
+        tipX = (int) Math.round(x + Math.cos(rad) * (r + 30));
+        tipY = (int) Math.round(y + Math.sin(rad) * (r + 30));
 
         int leftX = (int) Math.round(x - Math.cos(rad) * 15 - Math.sin(rad) * 10);
         int leftY = (int) Math.round(y - Math.sin(rad) * 15 + Math.cos(rad) * 10);
