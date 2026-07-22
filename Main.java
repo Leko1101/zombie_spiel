@@ -15,19 +15,47 @@ public class Main {
         Zeichenfenster z = new Zeichenfenster("zombie_spiel", 1920, 1080, backgroundColor);
         z.show();
         Player player = new Player(920, 500, 100);
+        Color textColor = Color.BLACK;
         
         Set<Integer> pressedKeys = new HashSet<>();
         ArrayList<Zombie> zombies = new ArrayList<>();
         ArrayList<Bullet> bullets = new ArrayList<>();
         int[] score = new int[]{0};
 
-        for (int i = 0; i < 6; i++) {
-            zombies.add(new Zombie((int) (Math.random() * 1860) + 30, (int) (Math.random() * 1020) + 30, 60));
-        }
+        int zombieR = 60;
+
+        int[] spawnTicker = new int[]{0};
+        int baseSpawnDelay = 125; // 125 ticks * 40ms = 5000ms (5 seconds) initial delay
+        int minSpawnDelay = 12;   // 12 ticks * 40ms = 480ms minimum delay (cap max speed)  
 
         update(z, player, zombies, zombies.size(), bullets);
 
-        Timer gameLoop = new Timer(40, e -> {
+        final Timer[] gameLoop = new Timer[1];
+
+        gameLoop[0] = new Timer(40, e -> {
+            
+            spawnTicker[0]++;
+
+            int dynamicDelay = (int) (baseSpawnDelay / (1.0 + (score[0] * 0.1)));
+            dynamicDelay = Math.max(dynamicDelay, minSpawnDelay);
+
+            if (spawnTicker[0] >= dynamicDelay) {
+                
+                int[] spawnXY = getRandomXY();
+
+                int dx = player.getX() - spawnXY[0];
+                int dy = player.getY() - spawnXY[1];
+
+                while(Math.sqrt(dx * dx + dy * dy) < 100) {
+                    spawnXY = getRandomXY();
+                }
+                
+                zombies.add(new Zombie(spawnXY[0], spawnXY[1], zombieR));
+
+                spawnTicker[0] = 0; // Reset ticker
+            }
+
+            
             for (Zombie zombie : zombies) {
                 if (zombie != null) {
                     zombie.moveTowards(player, 3);
@@ -38,8 +66,12 @@ public class Main {
                 if (zombie != null) {
                     if(zombie.isTouching(player)) {
                         System.out.println("Game over");
-                        z.closeWindow();
-                        System.exit(0); //display a game over screen
+                        z.clearCanvas();
+                        z.drawString("GAME OVER", 960, 400, textColor);
+                        z.drawString("Score: " + String.valueOf(score[0]), 960, 540, textColor);
+                        z.updateCanvas();
+                        gameLoop[0].stop();
+                        return;
                     }
                 }
             }
@@ -61,6 +93,7 @@ public class Main {
                         break; // Stop checking this bullet against other zombies since it's gone!
                     }
                 }
+
                 if (bullet.getX() > 1920 + bullet.getR() || bullet.getX() < 0 - bullet.getR() || bullet.getY() > 1080 + bullet.getR() || bullet.getY() < 0 - bullet.getR()) {
                     bullets.remove(i);
                 }
@@ -92,10 +125,11 @@ public class Main {
                     bullet.move();
                 }
             }
-
+            
             update(z, player, zombies, zombies.size(), bullets);
+            z.drawString("Score: " + String.valueOf(score[0]), 100, 100, textColor);
         });
-        gameLoop.start();
+        gameLoop[0].start();
 
         z.addKeyListener(new KeyListener() {
             @Override
@@ -135,6 +169,12 @@ public class Main {
         });
 
         z.requestFocus();
+    }
+
+    private static int[] getRandomXY() {
+        int x = (int) (Math.random() * 1920);
+        int y = (int) (Math.random() * 1080);
+        return new int[]{x,y};
     }
 
     private static void update(Zeichenfenster z, Player player, ArrayList<Zombie> zombies, int zombiesLength, ArrayList<Bullet> bullets) {
