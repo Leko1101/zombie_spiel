@@ -68,16 +68,16 @@ public class Main {
             }
 
             int movementChange = 10;
-            if (pressedKeys.contains(KeyEvent.VK_A)) {
+            if (pressedKeys.contains(KeyEvent.VK_A) && player.getX() > 0) {
                 player.move(movementChange, "A");
             }
-            if (pressedKeys.contains(KeyEvent.VK_D)) {
+            if (pressedKeys.contains(KeyEvent.VK_D) && player.getX() < 1920) {
                 player.move(movementChange, "D");
             }
-            if (pressedKeys.contains(KeyEvent.VK_S)) {
+            if (pressedKeys.contains(KeyEvent.VK_S) && player.getY() < 1080) {
                 player.move(movementChange, "S");
             }
-            if (pressedKeys.contains(KeyEvent.VK_W)) {
+            if (pressedKeys.contains(KeyEvent.VK_W) && player.getY() > 0) {
                 player.move(movementChange, "W");
             }
             if (pressedKeys.contains(KeyEvent.VK_Q)) {
