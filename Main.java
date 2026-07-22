@@ -61,6 +61,9 @@ public class Main {
                         break; // Stop checking this bullet against other zombies since it's gone!
                     }
                 }
+                if (bullet.getX() > 1920 + bullet.getR() || bullet.getX() < 0 - bullet.getR() || bullet.getY() > 1080 + bullet.getR() || bullet.getY() < 0 - bullet.getR()) {
+                    bullets.remove(i);
+                }
                 update(z, player, zombies, zombies.size(), bullets);
             }
 
