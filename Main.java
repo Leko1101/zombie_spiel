@@ -58,7 +58,7 @@ public class Main {
                         spawnXY = getRandomXY();
                         int dx = player.getX() - spawnXY[0];
                         int dy = player.getY() - spawnXY[1];
-                        if (Math.sqrt(dx * dx + dy * dy) >= 200) {
+                        if (Math.sqrt(dx * dx + dy * dy) >= 300) {
                             break;
                         }
                     } while (true);
@@ -197,7 +197,7 @@ public class Main {
             player.reset(920, 500, 0.5);
             restartButton.setVisible(false);
             z.clearCanvas();
-            update(z, player, zombies, zombies.size(), bullets);
+            update(z, player, zombies, bullets);
             z.refresh();
             z.requestFocus();
             if (!gameLoop[0].isRunning()) {
