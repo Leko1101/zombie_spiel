@@ -3,8 +3,10 @@ package src;
 import java.awt.*;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
+import javax.swing.JButton;
 
 public class Zeichenfenster {
     private final JFrame frame;
@@ -36,15 +38,15 @@ public class Zeichenfenster {
         canvas = new CanvasPane();
         canvas.setPreferredSize(new Dimension(width, height));
         canvas.setFocusable(true);
+        canvas.setLayout(null);
 
         frame.getContentPane().add(canvas, BorderLayout.CENTER);
 
         JPanel p1 = new JPanel();
         p1.setLayout(new BorderLayout());
         steuerungOst = new JPanel();
-        steuerungSued = new JPanel();
+        steuerungSued = new JPanel(new FlowLayout(FlowLayout.CENTER));
         steuerungOst.setLayout(new BoxLayout(steuerungOst, BoxLayout.Y_AXIS));
-        steuerungSued.setLayout(new BoxLayout(steuerungSued, BoxLayout.X_AXIS));
 
         p1.add(steuerungOst, BorderLayout.NORTH);
         frame.getContentPane().add(p1, BorderLayout.EAST);
@@ -75,6 +77,32 @@ public class Zeichenfenster {
 
     public void addMouseListener(MouseListener listener) {
         canvas.addMouseListener(listener);
+    }
+
+    public void addButton(JButton button) {
+        if (frame != null) {
+            int buttonWidth = 300;
+            int buttonHeight = 80;
+            button.setSize(buttonWidth, buttonHeight);
+            button.setFont(button.getFont().deriveFont(Font.BOLD, 24f));
+            button.setBackground(Color.RED);
+            button.setForeground(Color.WHITE);
+            button.setOpaque(true);
+            button.setFocusable(false);
+            button.setBounds((width - buttonWidth) / 2, (height - buttonHeight) / 2 + 120, buttonWidth, buttonHeight);
+            canvas.add(button);
+            frame.pack();
+            frame.revalidate();
+            frame.repaint();
+        }
+    }
+
+    public void refresh() {
+        if (frame != null) {
+            frame.pack();
+            frame.revalidate();
+            frame.repaint();
+        }
     }
 
     public void requestFocus() {
@@ -139,7 +167,12 @@ public class Zeichenfenster {
         graphic.setColor(original);
     }
 
-        public void drawCircle(int x, int y, int r, Color color) {
+    public void drawImage(BufferedImage image, AffineTransform transform) {
+        if (graphic == null) show();
+        graphic.drawImage(image, transform, null);
+    }
+
+    public void drawCircle(int x, int y, int r, Color color) {
         if (graphic == null) show();
         Color original = graphic.getColor();
         graphic.setColor(color);
