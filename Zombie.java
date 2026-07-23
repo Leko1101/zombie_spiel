@@ -1,4 +1,10 @@
 import java.awt.Color;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.imageio.ImageIO;
 import src.Zeichenfenster;
 
 public class Zombie {
@@ -6,11 +12,34 @@ public class Zombie {
     private int y;
     private final Color color = Color.GREEN;
     private final int r;
+    private final BufferedImage sprite;
 
     public Zombie(int x, int y, int r) {
         this.x = x;
         this.y = y;
         this.r = r;
+        this.sprite = loadSprite("zombie.png");
+    }
+
+    private BufferedImage loadSprite(String filename) {
+        try (InputStream in = getClass().getResourceAsStream('/' + filename)) {
+            if (in != null) {
+                return ImageIO.read(in);
+            }
+        } catch (IOException ignored) {
+        }
+
+        try {
+            return ImageIO.read(new File(filename));
+        } catch (IOException ignored) {
+        }
+
+        try {
+            return ImageIO.read(new File("zombie_spiel/" + filename));
+        } catch (IOException ignored) {
+        }
+
+        return null;
     }
 
     public int getX() {
@@ -48,6 +77,19 @@ public class Zombie {
     }
 
     public void show(Zeichenfenster z) {
-        z.fillCircle(x, y, r, color);
+        if (sprite != null) {
+            int imgW = sprite.getWidth();
+            int imgH = sprite.getHeight();
+            double targetSize = 2 * r;
+            double scale = Math.min(targetSize / imgW, targetSize / imgH);
+
+            AffineTransform at = new AffineTransform();
+            at.translate(x - (imgW * scale) / 2.0, y - (imgH * scale) / 2.0);
+            at.scale(scale, scale);
+
+            z.drawImage(sprite, at);
+        } else {
+            z.fillCircle(x, y, r, color);
+        }
     }
 }
