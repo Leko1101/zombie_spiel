@@ -4,7 +4,7 @@ import src.Zeichenfenster;
 public class Bullet {
     private double angle;
     private Color color = Color.BLACK;
-    private int speed = 30;
+    private int speed = 40;
     private int x; 
     private int y;
     private int r = 10;

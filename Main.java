@@ -25,8 +25,8 @@ public class Main {
         int zombieR = 60;
 
         int[] spawnTicker = new int[]{0};
-        int baseSpawnDelay = 125; // 125 ticks * 40ms = 5000ms (5 seconds) initial delay
-        int minSpawnDelay = 6;   // 12 ticks * 40ms = 480ms minimum delay (cap max speed)  
+        int baseSpawnDelay = 75; // 125 ticks * 40ms = 5000ms (5 seconds) initial delay
+        int minSpawnDelay = 1;   // 12 ticks * 40ms = 480ms minimum delay (cap max speed)  
 
         update(z, player, zombies,bullets);
 
@@ -43,16 +43,22 @@ public class Main {
                 
                 int[] spawnXY = getRandomXY();
 
-                int dx = player.getX() - spawnXY[0];
-                int dy = player.getY() - spawnXY[1];
+                if (spawnTicker[0] >= dynamicDelay) {
+    
+                    // Position suchen, die mindestens 200px vom Spieler entfernt ist
+                    do {
+                        spawnXY = getRandomXY();
+                        int dx = player.getX() - spawnXY[0];
+                        int dy = player.getY() - spawnXY[1];
+                        if (Math.sqrt(dx * dx + dy * dy) >= 200) {
+                            break;
+                        }
+                    } while (true);
 
-                while(Math.sqrt(dx * dx + dy * dy) < 200) {
-                    spawnXY = getRandomXY();
+                    zombies.add(new Zombie(spawnXY[0], spawnXY[1], zombieR));
+                    spawnTicker[0] = 0; // Reset ticker
                 }
-                
-                zombies.add(new Zombie(spawnXY[0], spawnXY[1], zombieR));
 
-                spawnTicker[0] = 0; // Reset ticker
             }
 
             
