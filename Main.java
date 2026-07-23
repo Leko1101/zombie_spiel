@@ -4,12 +4,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.Timer;
 import src.Zeichenfenster;
-import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
@@ -33,10 +33,10 @@ public class Main {
         int zombieR = 60;
 
         int[] spawnTicker = new int[]{0};
-        int baseSpawnDelay = 125; // 125 ticks * 40ms = 5000ms (5 seconds) initial delay
-        int minSpawnDelay = 12;   // 12 ticks * 40ms = 480ms minimum delay (cap max speed)  
+        int baseSpawnDelay = 75; // 125 ticks * 40ms = 5000ms (5 seconds) initial delay
+        int minSpawnDelay = 1;   // 12 ticks * 40ms = 480ms minimum delay (cap max speed)  
 
-        update(z, player, zombies, zombies.size(), bullets);
+        update(z, player, zombies,bullets);
 
         final Timer[] gameLoop = new Timer[1];
 
@@ -51,16 +51,22 @@ public class Main {
                 
                 int[] spawnXY = getRandomXY();
 
-                int dx = player.getX() - spawnXY[0];
-                int dy = player.getY() - spawnXY[1];
+                if (spawnTicker[0] >= dynamicDelay) {
+    
+                    // Position suchen, die mindestens 200px vom Spieler entfernt ist
+                    do {
+                        spawnXY = getRandomXY();
+                        int dx = player.getX() - spawnXY[0];
+                        int dy = player.getY() - spawnXY[1];
+                        if (Math.sqrt(dx * dx + dy * dy) >= 200) {
+                            break;
+                        }
+                    } while (true);
 
-                while(Math.sqrt(dx * dx + dy * dy) < 100) {
-                    spawnXY = getRandomXY();
+                    zombies.add(new Zombie(spawnXY[0], spawnXY[1], zombieR));
+                    spawnTicker[0] = 0; // Reset ticker
                 }
-                
-                zombies.add(new Zombie(spawnXY[0], spawnXY[1], zombieR));
 
-                spawnTicker[0] = 0; // Reset ticker
             }
 
             
@@ -89,6 +95,7 @@ public class Main {
             
             for (int i = bullets.size() - 1; i >= 0; i--) {
                 Bullet bullet = bullets.get(i);
+                boolean bulletRemoved = false;
     
                 for (int j = zombies.size() - 1; j >= 0; j--) {
                     Zombie zombie = zombies.get(j);
@@ -100,14 +107,18 @@ public class Main {
                         bullets.remove(i);  // Remove bullet by index
                         zombies.remove(j);  // Remove zombie by index
                         score[0] += 1;
+                        bulletRemoved = true;
                         break; // Stop checking this bullet against other zombies since it's gone!
                     }
                 }
 
-                if (bullet.getX() > 1920 + bullet.getR() || bullet.getX() < 0 - bullet.getR() || bullet.getY() > 1080 + bullet.getR() || bullet.getY() < 0 - bullet.getR()) {
-                    bullets.remove(i);
+
+                if(!bulletRemoved) {
+                    if (bullet.getX() > 1920 + bullet.getR() || bullet.getX() < 0 - bullet.getR() || bullet.getY() > 1080 + bullet.getR() || bullet.getY() < 0 - bullet.getR()) {
+                        bullets.remove(i);
+                    }
                 }
-                update(z, player, zombies, zombies.size(), bullets);
+                update(z, player, zombies, bullets);
             }
 
             int movementChange = 10;
@@ -136,7 +147,7 @@ public class Main {
                 }
             }
             
-            update(z, player, zombies, zombies.size(), bullets);
+            update(z, player, zombies, bullets);
             z.drawString("Score: " + String.valueOf(score[0]), 100, 100, textColor);
         });
         gameLoop[0].start();
@@ -204,19 +215,19 @@ public class Main {
         return new int[]{x,y};
     }
 
-    private static void update(Zeichenfenster z, Player player, ArrayList<Zombie> zombies, int zombiesLength, ArrayList<Bullet> bullets) {
+    private static void update(Zeichenfenster z, Player player, ArrayList<Zombie> zombies, ArrayList<Bullet> bullets) {
         z.clearCanvas();
         player.show(z);
-
-        for (int i = 0; i < zombiesLength; i++) {
-            if (zombies.get(i) != null) {
-                zombies.get(i).show(z);
-            }
-        }
 
         for (Bullet bullet : bullets) {
             if (bullet != null) {
                 bullet.show(z);
+            }
+        }
+
+        for (Zombie zombie : zombies) {
+            if (zombie != null) {
+                zombie.show(z);
             }
         }
 
