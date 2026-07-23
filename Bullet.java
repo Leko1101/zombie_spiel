@@ -2,12 +2,12 @@ import java.awt.Color;
 import src.Zeichenfenster;
 
 public class Bullet {
-    double angle;
-    Color color = Color.BLACK;
-    int speed = 10;
-    int x; 
-    int y;
-    int r = 10;
+    private double angle;
+    private Color color = Color.BLACK;
+    private int speed = 30;
+    private int x; 
+    private int y;
+    private int r = 10;
 
     public Bullet(int x, int y, double angle) {
         this.x = x;
