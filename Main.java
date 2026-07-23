@@ -1,22 +1,30 @@
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashSet;
 import java.util.Set;
+import javax.swing.JButton;
 import javax.swing.Timer;
 import src.Zeichenfenster;
 import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        Color backgroundColor = Color.white;
-        Zeichenfenster z = new Zeichenfenster("zombie_spiel", 1920, 1080, backgroundColor);
+        EventQueue.invokeLater(() -> {
+            Color backgroundColor = Color.white;
+            Zeichenfenster z = new Zeichenfenster("zombie_spiel", 1920, 1080, backgroundColor);
         z.show();
         Player player = new Player(920, 500, 100);
         Color textColor = Color.BLACK;
-        
+
+        JButton restartButton = new JButton("Restart");
+        restartButton.setFocusable(false);
+        restartButton.setVisible(false);
+        z.addButton(restartButton);
+
         Set<Integer> pressedKeys = new HashSet<>();
         ArrayList<Zombie> zombies = new ArrayList<>();
         ArrayList<Bullet> bullets = new ArrayList<>();
@@ -70,6 +78,8 @@ public class Main {
                         z.drawString("GAME OVER", 960, 400, textColor);
                         z.drawString("Score: " + String.valueOf(score[0]), 960, 540, textColor);
                         z.updateCanvas();
+                        restartButton.setVisible(true);
+                        z.refresh();
                         gameLoop[0].stop();
                         return;
                     }
@@ -168,7 +178,24 @@ public class Main {
             public void mouseExited(MouseEvent e) {}
         });
 
+        restartButton.addActionListener(e -> {
+            bullets.clear();
+            zombies.clear();
+            score[0] = 0;
+            spawnTicker[0] = 0;
+            player.reset(920, 500, 0.5);
+            restartButton.setVisible(false);
+            z.clearCanvas();
+            update(z, player, zombies, zombies.size(), bullets);
+            z.refresh();
+            z.requestFocus();
+            if (!gameLoop[0].isRunning()) {
+                gameLoop[0].start();
+            }
+        });
+
         z.requestFocus();
+            });
     }
 
     private static int[] getRandomXY() {
